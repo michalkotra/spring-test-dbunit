@@ -18,7 +18,7 @@ package com.github.springtestdbunit.assertion;
 
 import java.util.List;
 
-import org.dbunit.Assertion;
+import com.github.springtestdbunit.assertion.custom.Assertion;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;

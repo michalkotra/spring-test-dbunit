@@ -20,7 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.dbunit.Assertion;
+import com.github.springtestdbunit.assertion.custom.Assertion;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.Columns;
