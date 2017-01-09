@@ -61,10 +61,10 @@ public @interface ExpectedDatabase {
 	String value() default "";
 
 	/**
-	 * Database assertion mode to use. Default is {@link DatabaseAssertionMode#DEFAULT}.
+	 * Database assertion mode to use. Default is {@link DatabaseAssertionMode#NON_STRICT_UNORDERED}.
 	 * @return Database assertion mode to use
 	 */
-	DatabaseAssertionMode assertionMode() default DatabaseAssertionMode.DEFAULT;
+	DatabaseAssertionMode assertionMode() default DatabaseAssertionMode.NON_STRICT_UNORDERED;
 
 	/**
 	 * Optional table name that can be used to limit the comparison to a specific table.

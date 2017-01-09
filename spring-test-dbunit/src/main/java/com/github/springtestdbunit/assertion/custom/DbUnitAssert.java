@@ -1,8 +1,10 @@
 package com.github.springtestdbunit.assertion.custom;
 
 
-import java.util.Objects;
+import java.util.Arrays;
+import java.util.List;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.assertion.Difference;
 import org.dbunit.assertion.FailureHandler;
@@ -27,6 +29,10 @@ import org.slf4j.LoggerFactory;
  */
 public class DbUnitAssert extends org.dbunit.assertion.DbUnitAssert
 {
+ 
+    
+    //should be a part of external configuration 
+    private static final List<String> ROW_MATCHERS = Arrays.asList("_ID", "_CIF", "_CURRENCY_CODE");
     
     private static final Logger logger = LoggerFactory.getLogger(DbUnitAssert.class);
 
@@ -109,7 +115,7 @@ public class DbUnitAssert extends org.dbunit.assertion.DbUnitAssert
             throw new NullPointerException(
                     "The parameter 'failureHandler' must not be null");
         }
-
+        
         
         // iterate over all rows
         for (int i = 0; i < expectedTable.getRowCount(); i++) {
@@ -124,15 +130,20 @@ public class DbUnitAssert extends org.dbunit.assertion.DbUnitAssert
                 Object expectedValue = expectedTable.getValue(i, columnName);
                 Object actualValue = null;
 
-                String primaryKey = comparisonCols[0].getColumnName().substring(0,3)+"_ID";
-                Object expectedPrimary = expectedTable.getValue(i, primaryKey);
-
-                for ( int k = 0 ; k < actualTable.getRowCount(); k++) {
-                    Object actualPrimary = actualTable.getValue(k, primaryKey);
-                    if (actualPrimary.toString().equals(expectedPrimary.toString())) {
-                        actualValue = actualTable.getValue(k, columnName);
+                for (String rowMatcher : ROW_MATCHERS) {
+                    String uniqueColumn = comparisonCols[0].getColumnName().substring(0,3) + rowMatcher;
+                    if (checkColumnName(comparisonCols, uniqueColumn)) {
+                        Object expectedPrimary = expectedTable.getValue(i, uniqueColumn);
+                        for (int k = 0; k < actualTable.getRowCount(); k++) {
+                            Object actualPrimary = actualTable.getValue(k, uniqueColumn);
+                            if (actualPrimary.toString().equals(expectedPrimary.toString())) {
+                                actualValue = actualTable.getValue(k, columnName);
+                                break;
+                            }
+                        }
                     }
                 }
+                
                 
                 // Compare the values
                 if (skipCompare(columnName, expectedValue, actualValue)) {
@@ -155,7 +166,14 @@ public class DbUnitAssert extends org.dbunit.assertion.DbUnitAssert
                 }
             }
         }
-
     }
 
+    private boolean checkColumnName(ComparisonColumn[] comparisonCols, String columnName) {
+        for (ComparisonColumn column : comparisonCols) {
+            if (column.getColumnName().equals(columnName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

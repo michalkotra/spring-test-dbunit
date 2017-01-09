@@ -59,7 +59,7 @@ public enum DatabaseAssertionMode {
 	 * </ul>
 	 */
 	NON_STRICT_UNORDERED(new NonStrictUnorderedDatabaseAssertion());
-
+	
 	private DatabaseAssertion databaseAssertion;
 
 	private DatabaseAssertionMode(DatabaseAssertion databaseAssertion) {
